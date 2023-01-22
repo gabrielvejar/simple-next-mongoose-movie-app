@@ -11,6 +11,7 @@ export default function New() {
   //   plot: ""
   // })
   const [errorMessages, setErrorMessages] = useState([])
+  const [isSaving, setIsSaving] = useState(false)
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,6 +26,7 @@ export default function New() {
   };
 
   const postData = async (form) => {
+    setIsSaving(true)
     try {
       const res = await fetch("/api/movie", {
         method: "POST",
@@ -41,11 +43,13 @@ export default function New() {
           newErrors.push(error.message)
         }
         setErrorMessages(newErrors)
+        setIsSaving(false)
       } else {
         router.push("/")
       }
     } catch (error) {
       console.log(error);
+      setIsSaving(false)
     }
   }
 
@@ -102,8 +106,8 @@ export default function New() {
         {errorMessages.map((errorMessage) => (
           <p key={errorMessage}>{errorMessage}</p>
         )) }
-        <button className="btn btn-primary w-100 my-2" type="submit">
-          Agregar
+        <button className="btn btn-primary w-100 my-2" type="submit" disabled={isSaving}>
+          Agregar {isSaving && "..."}
         </button>
         <Link href="/" className="btn btn-warning w-100">
           {/* <a className="btn btn-primary w-100">Volver...</a> */}
